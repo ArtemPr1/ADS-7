@@ -5,64 +5,59 @@ template<typename T>
 class TPQueue {
  private:
   struct ITEM {
-    T tim;
-    ITEM* next;
+        T value;
+        ITEM* next;
+        ITEM* last;
   };
   ITEM* head;
   ITEM* tail;
-  TPQueue::ITEM* create(const T& value) {
-    ITEM* i = new ITEM;
-    i->tim = value;
-    i->next = nullptr;
-    return i;
-  }
- 
+    ITEM* create(T value) {
+    ITEM* item = new ITEM;
+    item->value = value;
+    item->next = nullptr;
+    item->last = nullptr;
+    return item;
+}
+
  public:
-  TPQueue() :head(nullptr), tail(nullptr) {}
   T pop() {
-    if (head) {
-      ITEM* temp = head;
-      head = head->next;
-      return temp->tim;
+ITEM* num = head->next;
+if (num) {
+    num->last = nullptr;
     }
-    T value;
-    value.prior = 0;
-    value.ch = ' ';
-    return value;
+T value = head->value;
+delete head;
+head = num;
+return value;
   }
-  void push(T value) {
-    ITEM* tmp = nullptr;
-    ITEM* i = create(value);
-    ITEM* temp = head;
-    if (head && tail) {
-       while (temp && (temp->tim).prior >= value.prior) {
-         tmp = temp;
-         temp = temp->next;
-       }
-       if (temp == head && ((head->tim).prior == (i->tim).prior)) {
-         i->next = head->next;
-         head->next = i;
-       } else if (temp == head && ((head->tim).prior >= (i->tim).prior)) {
-         i->next = head->next;
-         head->next = i;
-       } else if (temp == head && ((head->tim).prior < (i->tim).prior)) {
-         i->next = head;
-         head = i;
-       } else if (!temp) {
-         tail->next = i;
-         tail = i;
-       } else {
-         tmp->next = i;
-         i->next = temp;
-       }
-    } else {
-      head = create(value);
-      tail = head;
-    }
+
+
+    TPQueue() :head(nullptr), tail(nullptr) {}
+    void push(T value) {
+      ITEM* num = head;
+      ITEM* item = create(value);
+      while (num && num->value.prior >= value.prior)
+        num = num->next;
+      if (!num && head) {
+        tail->next = item;
+        tail->next->last = tail;
+        tail = item;
+      } else if (!num && !head) {
+        head = tail = item;
+      } else if (!num->last) {
+        num->last = item;
+        item->next = num;
+        head = item;
+      } else {
+        num->last->next = item;
+        item->last = num->last;
+        item->next = num;
+        num->last = item;
+      }
   }
 };
 struct SYM {
   char ch;
   int prior;
 };
-#endif  
+#endif  // INCLUDE_TPQUEUE_H_
